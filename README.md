@@ -9,6 +9,8 @@ The guide how to do it can be checked out on the official kubernetes documentati
 
 [Link to Kubernetes Documentation](https://kubernetes.io/docs/home/)
 
+[GKE - Google Kubernetes Engine - Deploy App Cluster](https://cloud.google.com/kubernetes-engine/docs/deploy-app-cluster)
+
 
 # Get Running
 
@@ -21,10 +23,9 @@ The guide how to do it can be checked out on the official kubernetes documentati
 1. `minikube start`
 2. *Optional*: `kompose convert -f docker-compose.yml` to generate `flask-app-*.yaml` files.
 3. `kubectl apply -f flask-app-deployment.yml,flask-app-service.yaml,flask-app-ingress.yaml`
-4. `minikube service flask-app`
+4. `minikube service flask-app` or alternatively, use kubectl to forward the port: `kubectl port-forward service/flask-app 5000:5000`
 5. `minikube stop`
 6. *Optional*: `minikube delete`
-
 
 **NOTE**:
 
@@ -41,6 +42,52 @@ http://127.0.0.1:51082
 
 Then use the given URL to access the app:
 curl 127.0.0.1:51082
+
+
+## Using Google Kubernetes Engine - GKE
+
+1. Create an Autopilot cluster named: 
+```bash
+gcloud container clusters create-auto flask-app-cluster \
+    --location=us-central1
+```
+
+2. After creating your cluster, you need to get authentication credentials to interact with the cluster:
+```bash
+gcloud container clusters get-credentials flask-app-cluster \
+    --location us-central1
+```
+
+### Deploy Manually:
+
+3. To run flask-app in your cluster, you need to deploy the application by running the following command:
+```bash
+kubectl create deployment flask-app \
+    --image=frgentile/flask-app:latest
+```
+
+4. After deploying the application, you need to expose it to the internet so that users can access it. You can expose your application by creating a Service, a Kubernetes resource that exposes your application to external traffic. To expose your application, run the following kubectl expose command:
+```bash
+kubectl expose deployment flask-app \
+    --type LoadBalancer \
+    --port 80 \
+    --target-port 5000
+```
+
+5. Clean up to avoid incurring charges to your Google Cloud account for the resources used. Delete the application's Service by running kubectl delete:
+```bash
+kubectl delete service flask-app
+kubectl delete deployment flask-app
+```
+This command deletes the Compute Engine load balancer that you created when you exposed the Deployment. Delete your cluster by running gcloud container clusters delete:
+```bash
+gcloud container clusters delete flask-app-cluster \
+    --location us-central1
+```
+
+### Deploy applying .yaml files:
+
+
 
 
 # Kompose
