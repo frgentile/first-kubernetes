@@ -1,0 +1,37 @@
+{
+	"name": "Ubuntu 22.04 - Python 3.10",
+	"build": {
+		"dockerfile": "../Dockerfile",
+		"target": "base"
+	},
+
+	// Configure tool-specific properties.
+	"customizations": {
+		"vscode": {
+			"settings": {
+				"terminal.integrated.defaultProfile.linux": "bash"
+			},
+			"extensions": [
+				"ms-python.python",
+				"ms-toolsai.jupyter",
+				"ms-azuretools.vscode-docker",
+				"GitHub.copilot",
+				"googlecloudtools.cloudcode"
+			]
+		}
+	},
+
+	"runArgs": [
+		"-v", "/var/run/docker.sock:/var/run/docker.sock",
+		"--net=host"
+	],
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [ 5000 ],
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	// "postCreateCommand": "pip3 install --user -r requirements.txt",
+
+	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+	"remoteUser": "developer"
+}

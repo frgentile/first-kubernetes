@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml
+    kompose.service.expose: "true"
+    kompose.service.type: nodePort
+    kompose.version: 1.34.0 (cbf2835db)
+  labels:
+    io.kompose.service: flask-app
+  name: flask-app
+spec:
+  rules:
+    - http:
+        paths:
+          - backend:
+              service:
+                name: flask-app
+                port:
+                  number: 5000
+            path: /
+            pathType: Prefix

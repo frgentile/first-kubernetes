@@ -1,0 +1,22 @@
+services:
+  flask-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: deploy
+    image: frgentile/flask-app:latest
+    # container_name: flask-app
+    ports:
+      - "5000:5000"
+    deploy:
+      mode: replicated
+      replicas: 2
+    labels:
+      # On cloud providers that support load balancers, an external IP address would be provisioned 
+      # to access the Service. On minikube, the LoadBalancer type makes the Service accessible through 
+      # the minikube service command. Run the following command:
+      # $ minikube service flask-app
+      #
+      # Service types: clusterIP, nodePort, loadBalancer, ExternalName
+      kompose.service.type: nodePort
+      kompose.service.expose: "true"
