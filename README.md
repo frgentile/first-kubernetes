@@ -24,8 +24,9 @@ The guide how to do it can be checked out on the official kubernetes documentati
 2. *Optional*: `kompose convert -f docker-compose.yml` to generate `flask-app-*.yaml` files.
 3. `kubectl apply -f flask-app-deployment.yml,flask-app-service.yaml,flask-app-ingress.yaml`
 4. `minikube service flask-app` or alternatively, use kubectl to forward the port: `kubectl port-forward service/flask-app 5000:5000`
-5. `minikube stop`
-6. *Optional*: `minikube delete`
+5. `kubectl delete -f flask-app-deployment.yaml,flask-app-service.yaml,flask-app-ingress.yaml`
+6. `minikube stop`
+7. *Optional*: `minikube delete`
 
 **NOTE**:
 
