@@ -1,7 +1,6 @@
 FROM ubuntu:22.04 AS base
 
 LABEL author="Francisco GENTILE <ingentile@gmail.com>"
-LABEL description="Bridge between a MQTT broker and a MongoDB database"
 
 # Install build dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -18,7 +17,7 @@ RUN useradd -G sudo --create-home --system --shell /bin/bash developer && \
 # Create app folder and own it to the developer user
 RUN mkdir -p /app && chown developer:developer -R /app
 
-CMD ["/bin/bash"]
+CMD ["$@"]
 
 # ------------------------------------------------------------------------------
 # Stage: Deploy
@@ -43,6 +42,8 @@ RUN /bin/bash -c \
     pip install --no-cache-dir -r requirements.txt && \
     deactivate"
 
+EXPOSE 8000
+
 # Run app.py when the container launches
-ENTRYPOINT [ "/app/venv/bin/python3" ]
-CMD ["main.py"]
+ENTRYPOINT [ "/bin/bash" ]
+CMD ["container-entrypoint.sh"]

@@ -2,7 +2,9 @@ import paho.mqtt.client as mqtt
 from pymongo import MongoClient
 import json
 import os
+import logging
 
+logging.basicConfig(level=logging.INFO)
 
 # MongoDB setup
 mongo_client = MongoClient(os.getenv('MONGODB_URI', 'mongodb://mongodb:27017/'))
@@ -16,7 +18,9 @@ mqtt_topic = os.getenv('MQTT_TOPIC', '/data')
 
 # The callback for when the client receives a CONNACK response from the server.
 def mqtt_on_connect(client, userdata, flags, reason_code, properties):
-    print(f"Connected with result code {reason_code}")
+    global mqtt_topic
+    
+    logging.info(f"Connected with result code {reason_code}")
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
     client.subscribe(mqtt_topic)
@@ -24,7 +28,8 @@ def mqtt_on_connect(client, userdata, flags, reason_code, properties):
 
 # The callback for when a PUBLISH message is received from the server.
 def mqtt_on_message(client, userdata, msg):
-    print(msg.topic+" "+str(msg.payload))
+    global mongo_client, db
+    logging.info(msg.topic+" "+str(msg.payload))
     try:
         payload = json.loads(msg.payload.decode())
         device_name = payload.get('device')
@@ -39,6 +44,15 @@ def mqtt_on_message(client, userdata, msg):
 
 
 def main():
+    global mqtt_broker, mqtt_port, mqtt_topic
+
+    # Print the environment variables
+    logging.info(f"MQTT_BROKER: {mqtt_broker}")
+    logging.info(f"MQTT_PORT: {mqtt_port}")
+    logging.info(f"MQTT_TOPIC: {mqtt_topic}")
+    logging.info(f"MONGODB_URI: {os.getenv('MONGODB_URI', 'mongodb://mongodb:27017/')}")
+    logging.info(f"MONGODB_DATABASE: {os.getenv('MONGODB_DATABASE', 'iot_database')}")
+
     # Create an MQTT client instance
     mqtt_client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 
@@ -48,6 +62,7 @@ def main():
 
     # Connect to the MQTT broker
     mqtt_client.connect(mqtt_broker, mqtt_port, 60)
+    logging.info(f"Connected to MQTT broker at {mqtt_broker}:{mqtt_port}")
 
     # Blocking call that processes network traffic, dispatches callbacks and
     # handles reconnecting.

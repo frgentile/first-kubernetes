@@ -1,0 +1,9 @@
+.devcontainer/
+.vscode/
+.git/
+.github/
+
+venv/
+.venv/
+__pycache__/
+
