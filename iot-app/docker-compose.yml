@@ -9,6 +9,18 @@ services:
     networks:
       - iot-app
     restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
+    labels:
+      # On cloud providers that support load balancers, an external IP address would be provisioned 
+      # to access the Service. On minikube, the LoadBalancer type makes the Service accessible through 
+      # the minikube service command. Run the following command:
+      # $ minikube service flask-app
+      #
+      # Service types: clusterIP, nodePort, loadBalancer, ExternalName
+      kompose.service.type: nodePort
+      kompose.service.expose: "true"
 
   mongodb:
     image: mongodb/mongodb-community-server:6.0.0-ubi8
@@ -20,6 +32,18 @@ services:
     networks:
       - iot-app
     restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
+    labels:
+      # On cloud providers that support load balancers, an external IP address would be provisioned 
+      # to access the Service. On minikube, the LoadBalancer type makes the Service accessible through 
+      # the minikube service command. Run the following command:
+      # $ minikube service flask-app
+      #
+      # Service types: clusterIP, nodePort, loadBalancer, ExternalName
+      kompose.service.type: nodePort
+      kompose.service.expose: "true"
 
   mqtt-backend:
     build:
@@ -34,7 +58,19 @@ services:
     depends_on:
       - mosquitto
       - mongodb
-
+    deploy:
+      mode: replicated
+      replicas: 1
+    labels:
+      # On cloud providers that support load balancers, an external IP address would be provisioned 
+      # to access the Service. On minikube, the LoadBalancer type makes the Service accessible through 
+      # the minikube service command. Run the following command:
+      # $ minikube service flask-app
+      #
+      # Service types: clusterIP, nodePort, loadBalancer, ExternalName
+      kompose.service.type: clusterIP
+      kompose.service.expose: "false"
+  
   # web-api:
   #   image: web-api:latest
   #   container_name: web-api
