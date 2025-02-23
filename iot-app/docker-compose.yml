@@ -1,0 +1,63 @@
+services:
+  mosquitto:
+    image: eclipse-mosquitto:latest
+    container_name: mosquitto
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+    networks:
+      - iot-app
+    restart: always
+
+  mongodb:
+    image: mongodb/mongodb-community-server:6.0.0-ubi8
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - iot-app
+    restart: always
+
+  mqtt-backend:
+    build:
+      context: ./mqtt-backend
+      dockerfile: Dockerfile
+      target: deploy
+    image: frgentile/mqtt-backend:latest
+    container_name: mqtt-backend
+    networks:
+      - iot-app
+    restart: always 
+    depends_on:
+      - mosquitto
+      - mongodb
+
+  # web-api:
+  #   image: web-api:latest
+  #   container_name: web-api
+  #   ports:
+  #     - "5001:5001"
+  #   networks:
+  #     - iot-app
+  #   restart: always
+
+  # web-ui:
+  #   image: web-ui:latest
+  #   container_name: web-ui
+  #   ports:
+  #     - "5002:5002"
+  #   networks:
+  #     - iot-app
+  #   restart: always     
+
+
+volumes:
+  mongo-data:
+
+
+networks:
+  iot-app:
+    name: "iot-app"
