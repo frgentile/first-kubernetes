@@ -3,8 +3,18 @@ from fastapi import FastAPI
 from pymongo import MongoClient
 from bson.json_util import dumps
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+# Allow CORS from any origin
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # MongoDB configuration
 client = MongoClient(os.getenv('MONGODB_URI', 'mongodb://mongodb:27017/'))

@@ -22,7 +22,7 @@ micropython-esp32-mqtt
 
 ## Setup Instructions
 
-1. **Install MicroPython on ESP32**: Follow the official MicroPython documentation to flash MicroPython firmware onto your ESP32 or follow this steps:
+1. **Install MicroPython on ESP32**: Follow the official MicroPython documentation to flash MicroPython firmware onto your [ESP32](https://micropython.org/download/ESP32_GENERIC/) or follow this steps:
     1. Located where this README.md file is, create a Python virtual environment: `python3 -m venv .venv`
     2. Activate it: `source .venv/bin/activate`
     3. Update pip: `pip install -U pip`
@@ -30,6 +30,7 @@ micropython-esp32-mqtt
     5. Let's suppose `/dev/ttyUSB0` is the port connected to ESP32 board: `esptool.py --chip esp32 --port /dev/ttyUSB0 erase_flash`
     6. Write the uPython interpreter to the board, here I choose `ESP32_GENERIC-20241129-v1.24.1.bin` but can be anyone of those in `upython-repl` dir: `esptool.py --baud 460800 write_flash 0x1000 upython-repl/ESP32_GENERIC-20241129-v1.24.1.bin`
 
+CONTINUAR DESDE AQUI
 2. **Configure Wi-Fi and MQTT Settings**:
    - Open `config.py` and set the following parameters:
      - `WIFI_SSID`: Your Wi-Fi network name
